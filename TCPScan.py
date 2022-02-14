@@ -37,7 +37,7 @@ class TCPScan:
             print("PORT\tSERVICE")
             openPorts = 0
             for port in portsList:
-                s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 socket.setdefaulttimeout(1)
 
                 result = s.connect_ex((self.target, port))
