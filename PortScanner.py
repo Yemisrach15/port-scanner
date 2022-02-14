@@ -1,27 +1,36 @@
 import socket
 import sys
 
-class TCPScan:
-    def __init__(self, ip):
+class PortScanner:
+    def __init__(self, ip, proto):
         try:
             self.target = socket.gethostbyname(ip)
         except socket.gaierror:
             print("\nHost name could not be resolved")
             sys.exit()
 
+        self.protoString = proto
+        if (proto == "tcp"):
+            self.proto = socket.SOCK_STREAM
+        elif (proto == "udp"):
+            self.proto = socket.SOCK_DGRAM
+
     def scanRange(self, pi, pf):
         try:
-            print("PORT\tSERVICE")
+            print("PORT\tPROTOCOL\tSERVICE")
             openPorts = 0
             for port in range(pi, pf):
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s = socket.socket(socket.AF_INET, self.proto)
                 socket.setdefaulttimeout(1)
 
                 result = s.connect_ex((self.target, port))
                 if result == 0:
-                    openPorts += 1
-                    service = socket.getservbyport(port)
-                    print("{}\t{}".format(port, service))
+                    try:
+                        service = socket.getservbyport(port, self.protoString)
+                        openPorts += 1
+                        print("{}\t{}\t\t{}".format(port, self.protoString, service))
+                    except OSError:
+                        pass
                 s.close()
                 
             print("\nFinished Scanning: {} of {} scanned ports open".format(openPorts, (pf - pi)))
@@ -34,17 +43,20 @@ class TCPScan:
 
     def scanList(self, portsList):
         try:
-            print("PORT\tSERVICE")
+            print("PORT\tPROTOCOL\tSERVICE")
             openPorts = 0
             for port in portsList:
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s = socket.socket(socket.AF_INET, self.proto)
                 socket.setdefaulttimeout(1)
 
                 result = s.connect_ex((self.target, port))
-                if result == 0:
-                    openPorts += 1
-                    service = socket.getservbyport(port)
-                    print("{}\t{}".format(port, service))
+                if result == 0:     
+                    try:
+                        service = socket.getservbyport(port, self.protoString)
+                        openPorts += 1
+                        print("{}\t{}\t\t{}".format(port, self.protoString, service))
+                    except OSError:
+                        pass
                 s.close()
                 
             print("\nFinished Scanning: {} of {} scanned ports open".format(openPorts, len(portsList)))

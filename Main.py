@@ -1,5 +1,5 @@
 from TimeCounter import *
-from TCPScan import *
+from PortScanner import *
 import sys
 
 timeCounter = TimeCounter()
@@ -10,7 +10,7 @@ proto = sys.argv[6]
 
 # determine if ip is single or in range
 if ('-' not in ip):
-    tcpScan = TCPScan(ip)
+    tcpScan = PortScanner(ip, proto)
     print("-" * 50)
     print("Scanning Target: " + tcpScan.target)
     print("-" * 50)
@@ -50,7 +50,7 @@ else:
     timeCounter = TimeCounter()
     timeCounter.start()
     for ip4 in range(ipRangeI, ipRangeF): 
-        tcpScan = TCPScan("{}.{}.{}.{}".format(*ipBase, ip4))
+        tcpScan = PortScanner("{}.{}.{}.{}".format(*ipBase, ip4), proto)
         print("=" * 50)
         print("-" * 50)
         print("Scanning Target: " + tcpScan.target)
