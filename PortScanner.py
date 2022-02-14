@@ -1,5 +1,6 @@
 import socket
 import sys
+from TimeCounter import *
 
 class PortScanner:
     def __init__(self, ip, proto):
@@ -9,6 +10,7 @@ class PortScanner:
             print("\nHost name could not be resolved")
             sys.exit()
 
+        self.timeCounter = TimeCounter()
         self.protoString = proto
         if (proto == "tcp"):
             self.proto = socket.SOCK_STREAM
@@ -19,6 +21,7 @@ class PortScanner:
         try:
             print("PORT\tPROTOCOL\tSERVICE")
             openPorts = 0
+            self.timeCounter.start()
             for port in range(pi, pf):
                 s = socket.socket(socket.AF_INET, self.proto)
                 socket.setdefaulttimeout(1)
@@ -32,8 +35,11 @@ class PortScanner:
                     except OSError:
                         pass
                 s.close()
-                
+
+            self.timeCounter.stop()
             print("\nFinished Scanning: {} of {} scanned ports open".format(openPorts, (pf - pi)))
+            print("Total scanning time: " + self.timeCounter.total() + "\n")
+            
         except KeyboardInterrupt:
             print("\nCancelled Scanning...")
             sys.exit()
@@ -45,6 +51,7 @@ class PortScanner:
         try:
             print("PORT\tPROTOCOL\tSERVICE")
             openPorts = 0
+            self.timeCounter.start()
             for port in portsList:
                 s = socket.socket(socket.AF_INET, self.proto)
                 socket.setdefaulttimeout(1)
@@ -58,8 +65,11 @@ class PortScanner:
                     except OSError:
                         pass
                 s.close()
-                
+
+            self.timeCounter.stop()
             print("\nFinished Scanning: {} of {} scanned ports open".format(openPorts, len(portsList)))
+            print("Total scanning time: " + self.timeCounter.total())
+
         except KeyboardInterrupt:
             print("\nCancelled Scanning...")
             sys.exit()
