@@ -18,34 +18,8 @@ class PortScanner:
             self.proto = socket.SOCK_DGRAM
 
     def scanRange(self, pi, pf):
-        try:
-            print("PORT\tPROTOCOL\tSERVICE")
-            openPorts = 0
-            self.timeCounter.start()
-            for port in range(pi, pf):
-                s = socket.socket(socket.AF_INET, self.proto)
-                socket.setdefaulttimeout(1)
-
-                result = s.connect_ex((self.target, port))
-                if result == 0:
-                    try:
-                        service = socket.getservbyport(port, self.protoString)
-                        openPorts += 1
-                        print("{}\t{}\t\t{}".format(port, self.protoString, service))
-                    except OSError:
-                        pass
-                s.close()
-
-            self.timeCounter.stop()
-            print("\nFinished Scanning: {} of {} scanned ports open".format(openPorts, (pf - pi)))
-            print("Total scanning time: " + self.timeCounter.total() + "\n")
-            
-        except KeyboardInterrupt:
-            print("\nCancelled Scanning...")
-            sys.exit()
-        except socket.error:
-            print("\nServer not responding")
-            sys.exit()
+        portList = list(range(pi, pf))
+        self.scanList(portList)
 
     def scanList(self, portsList):
         try:
