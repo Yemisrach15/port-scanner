@@ -17,10 +17,6 @@ class PortScanner:
         elif (proto == "udp"):
             self.proto = socket.SOCK_DGRAM
 
-    def scanRange(self, pi, pf):
-        portList = list(range(pi, pf))
-        self.scanList(portList)
-
     def scanList(self, portsList):
         try:
             print("PORT\tPROTOCOL\tSERVICE")
